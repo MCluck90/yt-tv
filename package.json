@@ -1,0 +1,15 @@
+{
+  "name": "yt-tv",
+  "version": "0.0.1",
+  "description": "Control YouTube videos from your phone",
+  "dependencies": {
+    "express": "^4.4.3",
+    "socket.io": "^1.0.4",
+    "youtube-video": "0.0.5"
+  },
+  "devDependencies": {
+    "browserify": "^4.1.10",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^2.1.0"
+  }
+}
