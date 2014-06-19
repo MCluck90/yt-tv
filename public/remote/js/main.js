@@ -1,9 +1,11 @@
 'use strict';
 
-var socket = io('http://localhost', { query: 'clientType=remote' }),
+var socket = io('http://localhost:8080', { query: 'clientType=remote' }),
     resultsTable = document.getElementById('results'),
 
-    $search = $('#search');
+    $search = $('#search'),
+
+    linksEnabled = true;
 
 function fillResults(entries) {
     for (var i = 0, len = entries.length; i < len; i++) {
@@ -71,5 +73,22 @@ $search.keyup(function(evt) {
 
 // Select a video
 $('body').delegate('.thumbnail, .video-title', 'click', function() {
-    socket.emit('new-video', this.videoID);
+    if (linksEnabled) {
+        socket.emit('new-video', this.videoID);
+    }
+});
+
+$('#play-pause').click(function() {
+    socket.emit('play-pause');
+});
+
+// Disable/Enable videos depending on if another is loading
+socket.on('playing', function() {
+    $('.thumbnail').removeClass('disabled-link');
+    linksEnabled = true;
+});
+
+socket.on('loading', function() {
+    $('.thumbnail').addClass('disabled-link');
+    linksEnabled = false;
 });

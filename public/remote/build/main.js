@@ -1,10 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var socket = io('http://localhost', { query: 'clientType=remote' }),
+var socket = io('http://localhost:8080', { query: 'clientType=remote' }),
     resultsTable = document.getElementById('results'),
 
-    $search = $('#search');
+    $search = $('#search'),
+
+    linksEnabled = true;
 
 function fillResults(entries) {
     for (var i = 0, len = entries.length; i < len; i++) {
@@ -72,7 +74,23 @@ $search.keyup(function(evt) {
 
 // Select a video
 $('body').delegate('.thumbnail, .video-title', 'click', function() {
-    socket.emit('new-video', this.videoID);
+    if (linksEnabled) {
+        socket.emit('new-video', this.videoID);
+    }
 });
 
+$('#play-pause').click(function() {
+    socket.emit('play-pause');
+});
+
+// Disable/Enable videos depending on if another is loading
+socket.on('playing', function() {
+    $('.thumbnail').removeClass('disabled-link');
+    linksEnabled = true;
+});
+
+socket.on('loading', function() {
+    $('.thumbnail').addClass('disabled-link');
+    linksEnabled = false;
+});
 },{}]},{},[1])

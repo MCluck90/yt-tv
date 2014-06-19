@@ -4,15 +4,17 @@
     <title>YT-TV Remote</title>
     <link rel="stylesheet" href="/remote/css/bootstrap.min.css">
     <link rel="stylesheet" href="/remote/css/style.css">
+
+    <meta name="viewport" content="width=device-width initial-scale=1, maximum-scale=1, user-scalable=no"/>
 </head>
 <body>
-    <div class="navbar navbar-inverse">
-        <div class="container">
-            <button id="play-pause" type="button" class="btn btn-success btn-lg btn-block">Play/Pause</button>
+    <div class="r-container">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <button id="play-pause" type="button" class="btn btn-success btn-lg btn-block">Play/Pause</button>
+            </div>
         </div>
-    </div>
 
-    <div class="container">
         <input id="search" type="text" class="form-control" placeholder="Search..." />
         <table class="table table-striped">
             <tbody id="results">
@@ -22,7 +24,7 @@
 
     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/remote/build/main.js"></script>
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <script src="http://localhost:8080/remote/build/main.js"></script>
 </body>
 </html>

@@ -4,6 +4,8 @@
   "description": "Control YouTube videos from your phone",
   "dependencies": {
     "express": "^4.4.3",
+    "omxcontrol": "0.0.1",
+    "omxctrl": "^0.1.2",
     "socket.io": "^1.0.4",
     "youtube-video": "0.0.5"
   },

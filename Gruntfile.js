@@ -7,7 +7,6 @@ module.exports = function(grunt) {
         browserify: {
             debug: {
                 files: {
-                    'public/viewer/build/main-debug.js': ['public/viewer/js/main.js'],
                     'public/remote/build/main-debug.js': ['public/remote/js/main.js']
                 },
                 options: {
@@ -16,7 +15,6 @@ module.exports = function(grunt) {
             },
             release: {
                 files: {
-                    'public/viewer/build/main.js': ['public/viewer/js/main.js'],
                     'public/remote/build/main.js': ['public/remote/js/main.js']
                 }
             }

@@ -5,12 +5,18 @@ var express = require('express'),
     app = express(),
     server = require('http').Server(app),
     io = require('socket.io').listen(server),
+    omx = require('omxcontrol'),
+    youtubedl = require('youtube-dl'),
 
-    viewers = [],
-    publicDir = path.join(__dirname, '../public');
+    sockets = [],
+    publicDir = path.join(__dirname, '../public'),
+    loadingVideo = false,
 
-app.set('port', 80);
+    VIDEO_NOT_FOUND_ID = 'DH3ItsuvtQg';
+
+app.set('port', 8080);
 app.use(express.static(publicDir));
+app.use(omx());
 
 app.get('/', function(req, res) {
     res.sendfile(publicDir + '/viewer/index.html');
@@ -24,30 +30,51 @@ server.listen(app.get('port'), function() {
     console.log('YT-TV is running on port ' + app.get('port'));
 });
 
-function broadcastToViewers(event, data) {
-    for (var i = 0, len = viewers.length; i < len; i++) {
-        viewers[i].emit(event, data);
+function broadcastToSockets(event, data) {
+    sockets.forEach(function(socket) {
+        socket.emit(event, data);
+    });
+}
+
+function runVideo(videoID) {
+    if (loadingVideo) {
+        return;
     }
+    console.log('Loading video...');
+    loadingVideo = true;
+    broadcastToSockets('loading');
+    youtubedl.getInfo('https://youtube.com/watch?v=' + videoID, [], function(err, info) {
+        if (err) {
+            if (videoID === VIDEO_NOT_FOUND_ID) {
+                throw err;
+            } else {
+                runVideo(VIDEO_NOT_FOUND_ID);
+            }
+            return;
+        }
+
+        console.log('Playing ' + info.title);
+        loadingVideo = false;
+        broadcastToSockets('playing');
+        omx.quit();
+        omx.start(info.url);
+    });
 }
 
 io.sockets.on('connection', function(socket) {
-    var clientType = socket.handshake.query.clientType;
-    if (clientType === 'viewer') {
-        viewers.push(socket);
-        socket.on('disconnect', function() {
-            var index = viewers.indexOf(socket);
-            viewers.splice(1, index);
-        });
-        return;
+    sockets.push(socket);
+    console.log('Connected socket');
+    if (loadingVideo) {
+        socket.emit('loading');
     }
+    socket.on('new-video', runVideo);
 
-    socket.on('new-video', function(videoID) {
-        broadcastToViewers('new-video', videoID);
+    socket.on('play-pause', function() {
+        console.log('Paused...');
+        omx.pause();
     });
-    socket.on('play', function() {
-        broadcastToViewers('play');
-    });
-    socket.on('pause', function() {
-        broadcastToViewers('pause');
+
+    socket.on('disconnect', function() {
+        sockets.splice(1, sockets.indexOf(socket));
     });
 });

@@ -1,10 +1,18 @@
+body {
+    margin-top: 60px;
+}
 #search {
     width: 100%;
     margin-bottom: 2em;
 }
 .thumbnail {
+    width: 100%;
     cursor: pointer;
 }
 .video-title {
     margin-right: 2em;
+}
+.disabled-link {
+    opacity: 0.5;
+    cursor: default;
 }
