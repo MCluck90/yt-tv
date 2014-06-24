@@ -43,8 +43,9 @@ function runVideo(videoID) {
     console.log('Loading video...');
     loadingVideo = true;
     broadcastToSockets('loading');
-    youtubedl.getInfo('https://youtube.com/watch?v=' + videoID, [], function(err, info) {
+    youtubedl.getInfo('https://youtube.com/watch?v=' + videoID, ['--max-quality=22'], function(err, info) {
         if (err) {
+            console.log('Error: ' + err.toString());
             if (videoID === VIDEO_NOT_FOUND_ID) {
                 throw err;
             } else {
@@ -70,7 +71,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('new-video', runVideo);
 
     socket.on('play-pause', function() {
-        console.log('Paused...');
+        console.log('Pause toggled');
         omx.pause();
     });
 

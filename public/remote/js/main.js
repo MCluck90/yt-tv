@@ -45,12 +45,16 @@ function search() {
     if (query.length === 0) {
         return;
     }
+
+    query = query.replace(/http[s]:\/\//, '');
+    query = query.replace('www.youtube.com/watch?v=', '');
+
     $.ajax({
         url: 'http://gdata.youtube.com/feeds/api/videos',
         type: 'GET',
         data: {
             vq: query,
-            'max-results': 12,
+            'max-results': 15,
             alt: 'json'
         },
         success: function(data) {
@@ -80,6 +84,7 @@ $('body').delegate('.thumbnail, .video-title', 'click', function() {
 
 $('#play-pause').click(function() {
     socket.emit('play-pause');
+    $('.thumbnail').addClass('disabled-link');
 });
 
 // Disable/Enable videos depending on if another is loading
