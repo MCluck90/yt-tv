@@ -16,3 +16,10 @@ body {
     opacity: 0.5;
     cursor: default;
 }
+
+@media screen and (min-width: 900px) {
+    #container, #play-pause {
+        width: 976px;
+        margin: 0 auto;
+    }
+}
